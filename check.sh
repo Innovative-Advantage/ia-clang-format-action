@@ -46,6 +46,7 @@ CHECK_PATH="$2"
 FALLBACK_STYLE="$3"
 EXCLUDE_REGEX="$4"
 INCLUDE_REGEX="$5"
+FILE_LIST="$6"
 
 # Set the regex to an empty string regex if nothing was provided
 if [[ -z $EXCLUDE_REGEX ]]; then
@@ -73,8 +74,12 @@ fi
 # initialize exit code
 exit_code=0
 
-# All files improperly formatted will be printed to the output.
-src_files=$(find "$CHECK_PATH" -name .git -prune -o -regextype posix-egrep -regex "$INCLUDE_REGEX" -print)
+if [[ -z $FILE_LIST ]]; then
+	# All files improperly formatted will be printed to the output.
+	src_files=$(find "$CHECK_PATH" -name .git -prune -o -regextype posix-egrep -regex "$INCLUDE_REGEX" -print)
+else
+	src_files=$(cat $FILE_LIST)
+fi
 
 # check formatting in each source file
 IFS=$'\n' # Loop below should separate on new lines, not spaces.
